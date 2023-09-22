@@ -35,8 +35,8 @@ namespace WpfApp20._09._2023
         private void Start_Click(object sender, RoutedEventArgs e)
         {
             Game.Visibility = Visibility.Visible;
-            Start.Visibility = Visibility.Collapsed;
-            Exit.Visibility = Visibility.Collapsed;
+            StartMenu.Visibility = Visibility.Collapsed;
+            HelpButton.Visibility = Visibility.Collapsed;
 
             dateTime = DateTime.Now.AddSeconds(60);
 
@@ -46,14 +46,16 @@ namespace WpfApp20._09._2023
             timer.Start();
 
             random = new Random();
-            randomNumber = random.Next(10,31);
+            randomNumber = random.Next(10, 31);
+
+            NumberText.Focus();
         }
         private void DownTimer(object sender, EventArgs e)
         {
             TimeSpan timeSpan = dateTime - DateTime.Now;
             if (timeSpan.TotalSeconds > 0)
             {
-                Timebox.Text =timeSpan.ToString("ss");
+                Timebox.Text = timeSpan.ToString("ss");
             }
             else
             {
@@ -66,31 +68,9 @@ namespace WpfApp20._09._2023
             Close();
         }
 
-        private void CheckNumberButton_Click(object sender, RoutedEventArgs e)
-        {
-            int num = int.Parse(NumberText.Text);
-            if(num == randomNumber)
-            {
-                HelpText.Text = "Верно";
-                HelpText.Foreground = Brushes.Green;
-                timer.Stop();
-            }
-            else
-            {
-                count++;
-                if(count % 3 == 0)
-                {
-                    HelpButton.Visibility = Visibility.Visible;
-                }
-                else  HelpButton.Visibility = Visibility.Collapsed;
-
-                HelpText.Text = "Не верно";
-                HelpText.Foreground = Brushes.Red;
-            }
-        }
-
         private void HelpButton_Click(object sender, RoutedEventArgs e)
         {
+            if(NumberText.Text != string.Empty) { 
             int num = int.Parse(NumberText.Text);
             HelpText.Foreground = Brushes.Black;
             if (num > randomNumber)
@@ -100,6 +80,40 @@ namespace WpfApp20._09._2023
             else
             {
                 HelpText.Text = "число должно быть больше";
+                }
+                HelpButton.Visibility = Visibility.Collapsed;
+            }
+        }
+
+            private void NumberText_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key >= Key.D0 && e.Key <= Key.D9)
+            {
+                NumberText.Text += e.Key - Key.D0;
+            }
+            if (e.Key == Key.Enter && NumberText.Text!= string.Empty)
+            {
+                int num = int.Parse(NumberText.Text);
+                if (num == randomNumber)
+                {
+                    HelpText.Text = "Верно";
+                    HelpText.Foreground = Brushes.Green;
+                    timer.Stop();
+                }
+                else
+                {
+                    
+                    count++;
+                    if (count % 3 == 0)
+                    {
+                        HelpButton.Visibility = Visibility.Visible;
+                    }
+                    else HelpButton.Visibility = Visibility.Collapsed;
+
+                    HelpText.Text = "Не верно";
+                    HelpText.Foreground = Brushes.Red;
+                }
+                NumberText.Text = string.Empty;
             }
         }
     }
